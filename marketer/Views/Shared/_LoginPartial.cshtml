@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Marketer.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+
+    <nav class="navbar navbar-light bg-primary">
+        
+        <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
+            <ul class="nav navbar-nav navbar-right text-light">
+                <li >
+                    <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+                </li>
+                <li class="btn-light">
+                    <button type="submit" class="btn btn-link navbar-btn navbar-link">خروج</button>
+                </li>
+            </ul>
+        </form>
+    </nav>
+  
+}
+else
+{
+    <ul class="navbar-nav mr-auto">
+        @*<li><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>*@
+        <li><a asp-area="" asp-controller="Account" asp-action="Login">ورود</a></li>
+    </ul>
+}

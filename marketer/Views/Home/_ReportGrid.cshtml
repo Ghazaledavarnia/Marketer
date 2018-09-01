@@ -1,0 +1,146 @@
+﻿@model IEnumerable<Marketer.Models.PersonViewModel>
+
+
+<table class="table table-sm">
+    <thead>
+        <tr class="text-center">
+            <th scope="col">#</th>
+            <th scope="col">نام فروشگاه</th>
+            <th scope="col">موبایل کاربر</th>
+            <th scope="col">عملیات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            var i = 0;
+            @foreach (var item in Model)
+            {
+                i++;
+                <tr class="text-center">
+                    <th scope="row">@i</th>
+                    <td>@item.Name</td>
+                    <td>@item.Mobile</td>
+                   @*<td style="display:none;">@item.Class</td>*@
+                    <td>
+
+                        @*@Html.ActionLink("ویرایش", "EditCourse", new { id = item.Id })*@
+                        <!-- Example of displaying an icon for your link -->
+                        <a href="#" class="fa fa-plus fa-1x edit" data-itmId='@item.Id' data-model="@item.Mobile,@item.Name,@item.Note,@item.Class,@item.Id" data-toggle="modal" data-target="#exampleModal"></a>
+                    </td>
+                </tr>
+            }
+
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">ویرایش</h5>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>*@
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="text" id="id" name="Id" style="display:none;"/>
+                    <div class="form-group">
+                        <label for="name " class="col-form-label bold">عنوان:</label>
+                        <input type="text" class="form-control" id="name" name="Name" maxlength="100">
+                        <span class="text-danger field-validation-valid" data-valmsg-for="name" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile" class="col-form-label bold">موبایل کاربر:</label>
+                        <input maxlength="11" type="text" class="form-control" id="mobile" name="Mobile">
+                        <span class="text-danger field-validation-valid" data-valmsg-for="mobile" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="class" class="col-form-label bold">صنف:</label>
+                        <select name="Class" asp-items="@ViewBag.Class" class="form-control" id="class">
+                            @*<option value="">صنف را وارد نمایید</option>*@
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text " class="col-form-label bold">توضیحات:</label>
+                        <textarea class="form-control" id="note" name="Name"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                <button type="button" id="editBtn" onclick="Edit()" class="btn btn-primary">ویرایش</button>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="itmId" value="" />
+<script>
+    $('.edit').click(function () {
+        
+        var itmId = $(this).data('itemId');
+        var item = $(this).data('model').split(',');
+        var json = JSON.stringify(item);
+        $('#mobile').val(item[0])
+        $('#name').val(item[1])
+        $('#note').val(item[2])
+        $('#class').val(item[3])
+        $('#id').val(item[4])
+        $('#itmId').val(itmId);
+
+    })
+    function Edit() {
+        $('#editBtn').attr('disabled', true);
+        var data = $("#editForm").serialize();
+        $.post("/Home/Update", data)
+            .done(function () {
+                $(".refreSh.formClass").val("");
+                $('span.text-danger.field-validation-valid').text('');
+                $('#exampleModal').modal("hide");
+                swal
+                    ({
+                        title: "تایید",
+                        text: "با موفقیت ثبت شد",
+                        type: "success",
+                        //  showCancelButton: true,
+                        confirmButtonClass: "btn-success",
+                        confirmButtonText: "ثبت",
+                        // cancelButtonText: "انصراف",
+                        closeOnConfirm: true
+                        //closeOnCancel: true
+                    })
+            })
+            .fail(function (errors) {
+                //swal("هشدار", "لطفا منتظر بمانید", "warning");
+                $('span.text-danger.field-validation-valid').text('');
+                var data;
+                try {
+                    data = JSON.parse(errors.responseText);
+                    if (data["Err"] !== undefined) {
+                        swal("خطا", data["Err"], "error");
+                    }
+                    var selecCommonclass = $(".formClass");
+                    for (var i = 0; i < selecCommonclass.length; i++) {
+                        var id = selecCommonclass[i].id;
+                        $('#' + id).parents('.group').addClass('error');
+                        $('span[data-valmsg-for="' + id + '"]').text(data[id]);
+                        //$('#agentForm').addClass('error');
+                        //$('input[name=id]').find('span[data-valmsg-for="' + id + '"]').text(data[id]);
+                    }
+                }
+                catch (e) {
+                    data = errors.responseText;
+                }
+                // else
+                //{
+                //    swal("هشدار", "لطفا منتظر بمانید", "warning");
+                //}
+                $('#editBtn').attr('disabled', false);
+
+            });
+
+    }
+
+</script>

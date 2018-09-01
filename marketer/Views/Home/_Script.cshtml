@@ -1,0 +1,73 @@
+﻿<script>
+    $(document).ready(function () {
+        var data, grid, dialog;
+        data = [
+            { 'ID': 1, 'Name': 'Hristo Stoichkov', 'PlaceOfBirth': 'Plovdiv, Bulgaria' },
+            { 'ID': 2, 'Name': 'Ronaldo Luís Nazário de Lima', 'PlaceOfBirth': 'Rio de Janeiro, Brazil' },
+            { 'ID': 3, 'Name': 'David Platt', 'PlaceOfBirth': 'Chadderton, Lancashire, England' },
+            { 'ID': 4, 'Name': 'Manuel Neuer', 'PlaceOfBirth': 'Gelsenkirchen, West Germany' },
+            { 'ID': 5, 'Name': 'James Rodríguez', 'PlaceOfBirth': 'Cúcuta, Colombia' },
+            { 'ID': 6, 'Name': 'Dimitar Berbatov', 'PlaceOfBirth': 'Blagoevgrad, Bulgaria' }
+        ];
+        grid = $('#grid').grid({
+            dataSource: data,
+            uiLibrary: 'bootstrap',
+            columns: [
+                { field: 'ID', width: 32 },
+                { field: 'Name', sortable: true },
+                { field: 'PlaceOfBirth', title: 'Place Of Birth', sortable: true },
+                { title: '', field: 'Edit', width: 34, type: 'icon', icon: 'glyphicon-pencil', tooltip: 'Edit', events: { 'click': Edit } },
+                { title: '', field: 'Delete', width: 34, type: 'icon', icon: 'glyphicon-remove', tooltip: 'Delete', events: { 'click': Delete } }
+            ],
+            pager: { limit: 5 }
+        });
+        dialog = $('#dialog').dialog({
+            title: 'Add/Edit Record',
+            autoOpen: false,
+            resizable: false,
+            modal: true
+        });
+        function Edit(e) {
+            $('#ID').val(e.data.id);
+            $('#Name').val(e.data.record.Name);
+            $('#PlaceOfBirth').val(e.data.record.PlaceOfBirth);
+            $('#dialog').dialog('open');
+        }
+        function Delete(e) {
+            if (confirm('Are you sure?')) {
+                grid.removeRow(e.data.id - 1);
+            }
+        }
+        function Save() {
+            if ($('#ID').val()) {
+                var id = parseInt($('#ID').val());
+                grid.updateRow(id, { 'ID': id, 'Name': $('#Name').val(), 'PlaceOfBirth': $('#PlaceOfBirth').val() });
+            } else {
+                grid.addRow({ 'ID': grid.count(true) + 1, 'Name': $('#Name').val(), 'PlaceOfBirth': $('#PlaceOfBirth').val() });
+            }
+            dialog.close();
+        }
+        $('#btnAdd').on('click', function () {
+            $('#ID').val('');
+            $('#Name').val('');
+            $('#PlaceOfBirth').val('');
+            $('#dialog').dialog('open');
+        });
+        $('#btnSave').on('click', Save);
+        $('#btnCancel').on('click', function () {
+            dialog.close();
+        });
+        $('#btnSearch').on('click', function () {
+            var query, result;
+            query = $('#txtQuery').val();
+            result = $.grep(data, function (e) {
+                return e.Name.indexOf(query) > -1 || e.PlaceOfBirth.indexOf(query) > -1;
+            });
+            grid.render(result);
+        });
+        $('#btnClear').on('click', function () {
+            $('#txtQuery').val('');
+            grid.render(data);
+        });
+    });
+</script>

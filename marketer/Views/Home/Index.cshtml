@@ -1,0 +1,139 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    //Layout = null;
+}
+@model PersonViewModel
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">ثبت</a>
+        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false" onclick="loadData();">آمار</a>
+
+    </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+        <div class="container">
+            <h3>ثبت فروشگاه</h3>
+            <form id="tab">
+                <div class="form-group">
+                    <label for="Name" class="bold">عنوان:</label>
+                    <input asp-for="Name" type="text" class="form-control formClass refreSh " id="Name" maxlength="100" placeholder="نام فروشگاه را وارد نمایید">
+                    <span class="text-danger field-validation-valid" data-valmsg-for="Name" data-valmsg-replace="true"></span>
+                </div>
+                <div class="form-group">
+                    <label for="Mobile" class="bold">موبایل:</label>
+                    <input asp-for="Mobile" id="Mobile" type="text" maxlength="11" class="form-control formClass refreSh " placeholder="موبایل کاربر را وارد نمایید">
+                    <span class="text-danger field-validation-valid" data-valmsg-for="Mobile" data-valmsg-replace="true"></span>
+                </div>
+             
+              <div class="form-group">
+            <label for="class" class="bold">صنف:</label>
+            <select asp-for="Class" asp-items="@ViewBag.Class" class="form-control formClass refreSh" id="Class" value="fdfdfdf">
+                صنف را وارد نمایید
+                <option value="" disabled selected>صنف را وارد نمایید</option>
+            </select>
+            <span class="text-danger field-validation-valid" data-valmsg-for="Class" data-valmsg-replace="true"></span>
+        </div>
+                <div class="form-group">
+                    <label for="pwd" class="bold">توضیحات:</label>
+                    <textarea asp-for="Note" rows="3" class="form-control  refreSh " placeholder=""> </textarea>
+                </div>
+                <button type="button" id="btnSubmit" onclick="Register()" class="btn btn-primary">ثبت</button>
+            </form>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+        <div id="reportGride"></div>
+    </div>
+
+</div>
+
+@section scripts{
+    <script>
+        function loadData() { 
+             $.ajax({
+            type: 'GET',
+            url:'@Url.Action("ReportGrid","Home")',
+            success: function (data) {
+                $('#reportGride').html(data);
+            }
+
+        })
+        }
+
+    $(document).ready(function () {
+       
+        loadData();
+    });
+        $('#Mobile').on('keyup', function (data) {
+         
+            $(this).val(persian2English($(this).val()));
+        });
+        $('#Mobile').on('blur', function (data) {
+         
+            $(this).val(persian2English($(this).val()));
+
+        });
+    function Register()
+    {
+        $('#btnSubmit').attr('disabled', true);
+        var data = $("#tab").serialize();
+        $.post("/Home/ReisterPerson", data)
+            .done(function ()
+            {
+                $(".refreSh.formClass").val("");
+                $('span.text-danger.field-validation-valid').text('');
+                swal
+               ({
+                    title: "تایید",
+                    text: "با موفقیت ثبت شد",
+                    type: "success",
+                    //  showCancelButton: true,
+                    confirmButtonClass: "btn-success",
+                    confirmButtonText: "ثبت",
+                    // cancelButtonText: "انصراف",
+                    closeOnConfirm: true
+                    //closeOnCancel: true
+               })
+            })
+            .fail(function (errors) {
+                //swal("هشدار", "لطفا منتظر بمانید", "warning");
+                $('span.text-danger.field-validation-valid').text('');
+                var data;
+                try {
+                    data = JSON.parse(errors.responseText);
+                    if (data["Err"] !== undefined) {
+                        swal("خطا", data["Err"], "error");
+                    }
+                    var selecCommonclass = $(".formClass");
+                    for (var i = 0; i < selecCommonclass.length; i++) {
+                        var id = selecCommonclass[i].id;
+                        $('#' + id).parents('.group').addClass('error');
+                        $('span[data-valmsg-for="' + id + '"]').text(data[id]);
+                        //$('#agentForm').addClass('error');
+                        //$('input[name=id]').find('span[data-valmsg-for="' + id + '"]').text(data[id]);
+                    }
+                }
+                catch (e) {
+                    data = errors.responseText;
+                }
+               // else
+                //{
+                //    swal("هشدار", "لطفا منتظر بمانید", "warning");
+                //}
+                $('#btnSubmit').attr('disabled', false);
+
+
+            });
+     }
+        function persian2English(data) {
+            data = data.replace(/۰/g, "0").replace(/۱/g, "1").replace(/۲/g, "2")
+                .replace(/۳/g, "3").replace(/۴/g, "4").replace(/٤/g, "4").replace(/۵/g, "5").replace(/٥/g, "5")
+                .replace(/٦/g, "6").replace(/۶/g, "6").replace(/v/g, "7").replace(/۸/g, "8")
+                .replace(/۹/g, "9");
+            return data;
+        }
+
+    </script>
+}

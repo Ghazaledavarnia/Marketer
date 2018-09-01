@@ -1,0 +1,92 @@
+@font-face {
+    font-family: 'iransansweb';
+    src: url('../fonts/iransansweb/iransansweb.eot') format('embedded-opentype'), url('../fonts/iransansweb/iransansweb.ttf') format('truetype'), url('../fonts/iransansweb/iransansweb.woff') format('woff'), url('../fonts/iransansweb/iransansweb.woff2') format('woff2')
+}
+
+@font-face {
+    font-family: 'iransansweb_bold';
+    src: url('../fonts/iransansweb/iransansweb_bold.eot') format('embedded-opentype'), url('../fonts/iransansweb/iransansweb_bold.ttf') format('truetype'), url('../fonts/iransansweb/iransansweb_bold.woff') format('woff'), url('../fonts/iransansweb/iransansweb_bold.woff2') format('woff2')
+}
+
+@font-face {
+    font-family: 'iransansweb_medium';
+    src: url('../fonts/iransansweb/iransansweb_medium.eot') format('embedded-opentype'), url('../fonts/iransansweb/iransansweb_medium.ttf') format('truetype'), url('../fonts/iransansweb/iransansweb_medium.woff') format('woff'), url('../fonts/iransansweb/iransansweb_medium.woff2') format('woff2')
+}
+
+@font-face {
+    font-family: 'roboto';
+    src: url('../fonts/roboto/roboto-regular.ttf') format('truetype');
+}
+
+body {
+    font-family: "iransansweb","iransansweb_medium","roboto",Arial,sans-serif !important;
+    font-size: 17px !important;
+    line-height: 1.428571429 !important;
+    /*color: #333 !important;*/
+    background-color: #fff !important;
+    min-width: 380px;
+    direction: rtl !important;
+    text-align: right !important;
+    padding-top: 0px!important;
+    
+    padding-bottom: 0px!important;
+}
+
+
+
+.bold {
+    font-family: "iransansweb_bold" !important;
+    color: #000 !important;
+}
+
+.label-checkbox100::before{
+    left:auto !important;
+    right:0px;
+}
+.label-checkbox100{
+    padding-right:26px;
+    padding-left:unset !important;
+}
+.input100 {
+    padding: 0 38px 0 5px !important;
+}
+
+a {
+    text-decoration:none!important;
+}
+.wrap-login100 {
+    background: #9152f8;
+    background: -webkit-linear-gradient(top, #7579ff, #b224ef);
+    background: -o-linear-gradient(top, #7579ff, #b224ef);
+    background: -moz-linear-gradient(top, #7579ff, #b224ef);
+    background: linear-gradient(to left top, #3000ec, #005dff, #0084ff, #00a3f4, #12bcdf) !important;
+}
+.login100-form-btn {
+    font-family: "iransansweb","iransansweb_medium","roboto",Arial,sans-serif !important;
+    font-size: 17px;
+    background: #f73859 !important;
+}
+.login100-form-title {
+    font-family: "iransansweb","iransansweb_medium","roboto",Arial,sans-serif !important;
+    font-size: 30px;
+}
+.label-checkbox100 {
+    font-family: "iransansweb", "iransansweb_medium", "roboto", Arial, sans-serif !important;
+}
+.txt1 {
+    font-family: "iransansweb", "iransansweb_medium", "roboto", Arial, sans-serif !important;
+    font-size:15px!important;
+}
+.bg-primary {
+    background-color: #3690f5 !important;
+}
+.p-t-90 {
+    padding-top: 80px!important;
+}
+.btn-link {
+    font-family: "iransansweb", "iransansweb_medium", "roboto", Arial, sans-serif !important;
+    font-weight: 400;
+    color: #007bff;
+  
+    background-color: white !important;
+}
